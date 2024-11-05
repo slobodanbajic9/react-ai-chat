@@ -17,7 +17,6 @@ function Sidebar({ onSelectConversation }) {
     };
 
     fetchConversations();
-    console.log("info", conversations);
   }, []);
 
   return (
@@ -27,9 +26,11 @@ function Sidebar({ onSelectConversation }) {
         {conversations.map((conversation, index) => (
           <li
             key={conversation._id}
-            onClick={() => onSelectConversation(conversation.history)}
+            onClick={() =>
+              onSelectConversation(conversation.history, conversation._id)
+            }
             className="cursor-pointer p-2 hover:bg-gray-700">
-            Question {index + 1}
+            {conversation.history[0].content}
           </li>
         ))}
       </ul>

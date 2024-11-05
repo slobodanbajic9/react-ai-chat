@@ -19,8 +19,22 @@ mongoose.connect(process.env.MONGO_URI, {
 app.post("/api/conversations", async (req, res) => {
   try {
     const newConversation = new Conversation({ history: req.body.history });
-    await newConversation.save();
-    res.status(201).json(newConversation);
+    const savedConversation = await newConversation.save();
+    res.status(201).json(savedConversation);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Update an existing conversation by adding a new message
+app.put("/api/conversations/:id", async (req, res) => {
+  try {
+    const updatedConversation = await Conversation.findByIdAndUpdate(
+      req.params.id,
+      { $push: { history: { $each: req.body.messages } } }, // Use `$each` to add multiple messages
+      { new: true } // Return the updated document
+    );
+    res.json(updatedConversation);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

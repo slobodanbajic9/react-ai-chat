@@ -7,12 +7,21 @@ import Sidebar from "./components/Sidebar";
 function App() {
   const [input, setInput] = useState("");
   const [history, setHistory] = useState([]);
+  const [conversationId, setConversationId] = useState(null);
 
-  const saveConversation = async () => {
-    try {
-      await axios.post("http://localhost:8000/api/conversations", { history });
-    } catch (error) {
-      console.error("Error saving conversation:", error);
+  // Function to handle saving/updating conversation
+  const saveOrUpdateConversation = async (messages) => {
+    if (conversationId) {
+      await axios.put(
+        `http://localhost:8000/api/conversations/${conversationId}`,
+        { messages }
+      );
+    } else {
+      const response = await axios.post(
+        "http://localhost:8000/api/conversations",
+        { history: messages }
+      );
+      setConversationId(response.data._id);
     }
   };
 
@@ -38,21 +47,24 @@ function App() {
         }
       );
 
-      const botMessage = result.data.choices[0].message.content;
-      setHistory((prevHistory) => [
-        ...prevHistory,
-        { role: "assistant", content: botMessage },
-      ]);
+      const botMessage = {
+        role: "assistant",
+        content: result.data.choices[0].message.content,
+      };
+      const updatedHistory = [...history, userMessage, botMessage];
+      setHistory(updatedHistory);
       setInput("");
 
-      saveConversation(); // Save conversation to MongoDB
+      // Save the user message and bot response together
+      saveOrUpdateConversation([userMessage, botMessage]);
     } catch (error) {
       console.error("Error fetching response:", error);
     }
   };
 
-  const handleSelectConversation = (conversation) => {
+  const handleSelectConversation = (conversation, id) => {
     setHistory(conversation);
+    setConversationId(id);
   };
 
   return (

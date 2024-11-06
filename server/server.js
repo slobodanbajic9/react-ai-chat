@@ -50,5 +50,15 @@ app.get("/api/conversations", async (req, res) => {
   }
 });
 
+// Delete a conversation by ID
+app.delete("/api/conversations/:id", async (req, res) => {
+  try {
+    await Conversation.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Conversation deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

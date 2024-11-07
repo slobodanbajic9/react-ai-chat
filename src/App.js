@@ -67,11 +67,19 @@ function App() {
     setConversationId(id);
   };
 
+  const handleNewChat = () => {
+    setHistory([]);
+    setConversationId(null);
+  };
+
   return (
     <div className="flex min-h-screen bg-black text-white font-sans">
-      <Sidebar onSelectConversation={handleSelectConversation} />
-      <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8">
-        <h1 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-8 text-blue-400">
+      <Sidebar
+        onSelectConversation={handleSelectConversation}
+        onNewChat={handleNewChat}
+      />
+      <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8 ml-4">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-8 text-blue-500">
           Dedalus AI Chat
         </h1>
         <ChatInput

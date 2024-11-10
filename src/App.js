@@ -1,15 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ChatInput from "./components/ChatInput";
 import ChatHistory from "./components/ChatHistory";
 import Sidebar from "./components/Sidebar";
+import { AiOutlineMenu } from "react-icons/ai";
+import { HiOutlineMenuAlt1 } from "react-icons/hi";
 
 function App() {
   const [input, setInput] = useState("");
   const [history, setHistory] = useState([]);
   const [conversationId, setConversationId] = useState(null);
+  const [conversations, setConversations] = useState([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Function to handle saving/updating conversation
+  useEffect(() => {
+    const fetchConversations = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/conversations"
+        );
+        setConversations(response.data);
+      } catch (error) {
+        console.error("Error fetching conversations:", error);
+      }
+    };
+
+    fetchConversations();
+  }, []);
+
   const saveOrUpdateConversation = async (messages) => {
     if (conversationId) {
       await axios.put(
@@ -22,6 +40,10 @@ function App() {
         { history: messages }
       );
       setConversationId(response.data._id);
+      setConversations((prevConversations) => [
+        response.data,
+        ...prevConversations,
+      ]);
     }
   };
 
@@ -55,16 +77,10 @@ function App() {
       setHistory(updatedHistory);
       setInput("");
 
-      // Save the user message and bot response together
       saveOrUpdateConversation([userMessage, botMessage]);
     } catch (error) {
       console.error("Error fetching response:", error);
     }
-  };
-
-  const handleSelectConversation = (conversation, id) => {
-    setHistory(conversation);
-    setConversationId(id);
   };
 
   const handleNewChat = () => {
@@ -72,14 +88,42 @@ function App() {
     setConversationId(null);
   };
 
+  const handleSelectConversation = (conversation, id) => {
+    setHistory(conversation);
+    setConversationId(id);
+  };
+
+  const handleDeleteConversation = (deletedId) => {
+    setConversations((prevConversations) =>
+      prevConversations.filter((conv) => conv._id !== deletedId)
+    );
+  };
+
   return (
-    <div className="flex min-h-screen bg-black text-white font-sans">
+    <div className="flex min-h-screen bg-black text-white font-sans relative">
+      <button
+        className="p-2 text-2xl rounded focus:outline-none absolute top-4 left-4 z-20 sm:hidden"
+        onClick={() => setSidebarOpen((prev) => !prev)}>
+        <HiOutlineMenuAlt1 />
+      </button>
+
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-10 sm:hidden"
+          onClick={() => setSidebarOpen(false)}></div>
+      )}
+
       <Sidebar
+        conversations={conversations}
         onSelectConversation={handleSelectConversation}
         onNewChat={handleNewChat}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        handleDeleteConversation={handleDeleteConversation}
       />
-      <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8 ml-4">
-        <h1 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-8 text-blue-500">
+
+      <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 mt-20">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-8 text-blue-400">
           Dedalus AI Chat
         </h1>
         <ChatInput

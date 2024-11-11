@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
+import {
+  fetchConversations,
+  saveOrUpdateConversation,
+  deleteConversation,
+} from "./services/api";
+
 import axios from "axios";
 import ChatInput from "./components/ChatInput";
 import ChatHistory from "./components/ChatHistory";
 import Sidebar from "./components/Sidebar";
-import { AiOutlineMenu } from "react-icons/ai";
 import { HiOutlineMenuAlt1 } from "react-icons/hi";
 
 function App() {
@@ -14,36 +19,19 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    const fetchConversations = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:8000/api/conversations"
-        );
-        setConversations(response.data);
-      } catch (error) {
-        console.error("Error fetching conversations:", error);
-      }
+    const loadConversations = async () => {
+      const data = await fetchConversations();
+      setConversations(data);
     };
 
-    fetchConversations();
+    loadConversations();
   }, []);
 
-  const saveOrUpdateConversation = async (messages) => {
-    if (conversationId) {
-      await axios.put(
-        `http://localhost:8000/api/conversations/${conversationId}`,
-        { messages }
-      );
-    } else {
-      const response = await axios.post(
-        "http://localhost:8000/api/conversations",
-        { history: messages }
-      );
-      setConversationId(response.data._id);
-      setConversations((prevConversations) => [
-        response.data,
-        ...prevConversations,
-      ]);
+  const handleSaveOrUpdateConversation = async (messages) => {
+    const result = await saveOrUpdateConversation(conversationId, messages);
+    if (!conversationId) {
+      setConversationId(result._id);
+      setConversations((prev) => [result, ...prev]);
     }
   };
 
@@ -77,7 +65,7 @@ function App() {
       setHistory(updatedHistory);
       setInput("");
 
-      saveOrUpdateConversation([userMessage, botMessage]);
+      handleSaveOrUpdateConversation([userMessage, botMessage]);
     } catch (error) {
       console.error("Error fetching response:", error);
     }
@@ -93,7 +81,8 @@ function App() {
     setConversationId(id);
   };
 
-  const handleDeleteConversation = (deletedId) => {
+  const handleDeleteConversation = async (deletedId) => {
+    await deleteConversation(deletedId);
     setConversations((prevConversations) =>
       prevConversations.filter((conv) => conv._id !== deletedId)
     );

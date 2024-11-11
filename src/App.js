@@ -1,51 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useConversations } from "./hooks/useConversations";
 import axios from "axios";
 import ChatInput from "./components/ChatInput";
 import ChatHistory from "./components/ChatHistory";
 import Sidebar from "./components/Sidebar";
-import { AiOutlineMenu } from "react-icons/ai";
 import { HiOutlineMenuAlt1 } from "react-icons/hi";
 
 function App() {
   const [input, setInput] = useState("");
   const [history, setHistory] = useState([]);
   const [conversationId, setConversationId] = useState(null);
-  const [conversations, setConversations] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchConversations = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:8000/api/conversations"
-        );
-        setConversations(response.data);
-      } catch (error) {
-        console.error("Error fetching conversations:", error);
-      }
-    };
-
-    fetchConversations();
-  }, []);
-
-  const saveOrUpdateConversation = async (messages) => {
-    if (conversationId) {
-      await axios.put(
-        `http://localhost:8000/api/conversations/${conversationId}`,
-        { messages }
-      );
-    } else {
-      const response = await axios.post(
-        "http://localhost:8000/api/conversations",
-        { history: messages }
-      );
-      setConversationId(response.data._id);
-      setConversations((prevConversations) => [
-        response.data,
-        ...prevConversations,
-      ]);
-    }
-  };
+  const { conversations, saveOrUpdateConversation, setConversations } =
+    useConversations();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -77,7 +45,7 @@ function App() {
       setHistory(updatedHistory);
       setInput("");
 
-      saveOrUpdateConversation([userMessage, botMessage]);
+      saveOrUpdateConversation([userMessage, botMessage], conversationId);
     } catch (error) {
       console.error("Error fetching response:", error);
     }

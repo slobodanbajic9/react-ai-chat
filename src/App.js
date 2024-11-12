@@ -9,6 +9,7 @@ import axios from "axios";
 import ChatInput from "./components/ChatInput";
 import ChatHistory from "./components/ChatHistory";
 import Sidebar from "./components/Sidebar";
+import Loader from "./components/Loader";
 import { HiOutlineMenuAlt1 } from "react-icons/hi";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
   const [conversationId, setConversationId] = useState(null);
   const [conversations, setConversations] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const loadConversations = async () => {
@@ -38,6 +40,8 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (input.trim() === "") return;
+
+    setIsLoading(true);
 
     const userMessage = { role: "user", content: input };
     setHistory((prevHistory) => [...prevHistory, userMessage]);
@@ -68,6 +72,8 @@ function App() {
       handleSaveOrUpdateConversation([userMessage, botMessage]);
     } catch (error) {
       console.error("Error fetching response:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -120,7 +126,7 @@ function App() {
           setInput={setInput}
           handleSubmit={handleSubmit}
         />
-        <ChatHistory history={history} />
+        {isLoading ? <Loader /> : <ChatHistory history={history} />}
       </div>
     </div>
   );

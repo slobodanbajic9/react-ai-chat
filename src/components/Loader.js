@@ -4,7 +4,7 @@ import { PulseLoader } from "react-spinners";
 const Loader = () => {
   return (
     <PulseLoader
-      size={30}
+      size={20}
       className="m-10"
       color="#60a5fa"
       aria-label="Loading Spinner"

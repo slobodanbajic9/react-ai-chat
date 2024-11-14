@@ -9,7 +9,6 @@ import axios from "axios";
 import ChatInput from "./components/ChatInput";
 import ChatHistory from "./components/ChatHistory";
 import Sidebar from "./components/Sidebar";
-import Loader from "./components/Loader";
 import { HiOutlineMenuAlt1 } from "react-icons/hi";
 
 function App() {
@@ -126,7 +125,7 @@ function App() {
           setInput={setInput}
           handleSubmit={handleSubmit}
         />
-        {isLoading ? <Loader /> : <ChatHistory history={history} />}
+        <ChatHistory history={history} isLoading={isLoading} />
       </div>
     </div>
   );

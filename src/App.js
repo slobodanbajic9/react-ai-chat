@@ -6,10 +6,11 @@ import {
 } from "./services/api";
 
 import axios from "axios";
-import ChatInput from "./components/ChatInput";
-import ChatHistory from "./components/ChatHistory";
 import Sidebar from "./components/Sidebar";
-import { HiOutlineMenuAlt1 } from "react-icons/hi";
+import SidebarToggle from "./components/SidebarToggle";
+import SidebarOverlay from "./components/SidebarOverlay";
+import ChatHeader from "./components/ChatHeader";
+import ChatSection from "./components/ChatSection";
 
 function App() {
   const [input, setInput] = useState("");
@@ -95,17 +96,12 @@ function App() {
 
   return (
     <div className="flex min-h-screen bg-black text-white font-sans relative">
-      <button
-        className="p-2 text-2xl rounded focus:outline-none absolute top-4 left-4 z-20 sm:hidden"
-        onClick={() => setSidebarOpen((prev) => !prev)}>
-        <HiOutlineMenuAlt1 />
-      </button>
+      <SidebarToggle
+        isOpen={sidebarOpen}
+        onClick={() => setSidebarOpen((prev) => !prev)}
+      />
 
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-10 sm:hidden"
-          onClick={() => setSidebarOpen(false)}></div>
-      )}
+      {sidebarOpen && <SidebarOverlay onClick={() => setSidebarOpen(false)} />}
 
       <Sidebar
         conversations={conversations}
@@ -116,16 +112,15 @@ function App() {
         handleDeleteConversation={handleDeleteConversation}
       />
 
-      <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 mt-20">
-        <h1 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-8 text-blue-400">
-          Dedalus AI Chat
-        </h1>
-        <ChatInput
+      <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 mt-20 mb-10">
+        <ChatHeader />
+        <ChatSection
+          history={history}
+          isLoading={isLoading}
           input={input}
           setInput={setInput}
           handleSubmit={handleSubmit}
         />
-        <ChatHistory history={history} isLoading={isLoading} />
       </div>
     </div>
   );

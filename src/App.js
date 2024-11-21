@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from "react";
+import SignInPage from "./components/SignIn";
+import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/clerk-react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
 import {
   fetchConversations,
   saveOrUpdateConversation,
@@ -95,34 +99,53 @@ function App() {
   };
 
   return (
-    <div className="flex min-h-screen bg-black text-white font-sans relative">
-      <SidebarToggle
-        isOpen={sidebarOpen}
-        onClick={() => setSidebarOpen((prev) => !prev)}
-      />
+    <Router>
+      <Routes>
+        <Route path="/sign-in" element={<SignInPage />} />
+        <Route
+          path="/"
+          element={
+            <>
+              <SignedIn>
+                <div className="flex min-h-screen bg-black text-white font-sans relative">
+                  <SidebarToggle
+                    isOpen={sidebarOpen}
+                    onClick={() => setSidebarOpen((prev) => !prev)}
+                  />
 
-      {sidebarOpen && <SidebarOverlay onClick={() => setSidebarOpen(false)} />}
+                  {sidebarOpen && (
+                    <SidebarOverlay onClick={() => setSidebarOpen(false)} />
+                  )}
 
-      <Sidebar
-        conversations={conversations}
-        onSelectConversation={handleSelectConversation}
-        onNewChat={handleNewChat}
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-        handleDeleteConversation={handleDeleteConversation}
-      />
+                  <Sidebar
+                    conversations={conversations}
+                    onSelectConversation={handleSelectConversation}
+                    onNewChat={handleNewChat}
+                    isOpen={sidebarOpen}
+                    onClose={() => setSidebarOpen(false)}
+                    handleDeleteConversation={handleDeleteConversation}
+                  />
 
-      <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 mt-20 mb-10">
-        <ChatHeader />
-        <ChatSection
-          history={history}
-          isLoading={isLoading}
-          input={input}
-          setInput={setInput}
-          handleSubmit={handleSubmit}
+                  <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 mt-20 mb-10">
+                    <ChatHeader />
+                    <ChatSection
+                      history={history}
+                      isLoading={isLoading}
+                      input={input}
+                      setInput={setInput}
+                      handleSubmit={handleSubmit}
+                    />
+                  </div>
+                </div>
+              </SignedIn>
+              <SignedOut>
+                <RedirectToSignIn />
+              </SignedOut>
+            </>
+          }
         />
-      </div>
-    </div>
+      </Routes>
+    </Router>
   );
 }
 

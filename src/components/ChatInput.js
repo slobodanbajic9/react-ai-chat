@@ -14,6 +14,13 @@ function ChatInput({ input, setInput, handleSubmit }) {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
+    }
+  };
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -22,6 +29,7 @@ function ChatInput({ input, setInput, handleSubmit }) {
         ref={textareaRef}
         value={input}
         onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
         placeholder="Ask me anything..."
         rows="1"
         className="w-full px-3 py-2 text-lg text-black placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none overflow-y-auto pr-16"

@@ -7,17 +7,13 @@ import {
   deleteConversation,
 } from "../services/api";
 
-import {
-  RedirectToSignIn,
-  SignedIn,
-  SignedOut,
-  SignOutButton,
-} from "@clerk/clerk-react";
+import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/clerk-react";
 
 import SidebarToggle from "./SidebarToggle";
 import SidebarOverlay from "./SidebarOverlay";
 import Sidebar from "./Sidebar";
 import ChatHeader from "./ChatHeader";
+import User from "./User";
 import ChatSection from "./ChatSection";
 
 const Home = () => {
@@ -104,35 +100,35 @@ const Home = () => {
   return (
     <>
       <SignedIn>
-        <div className="flex min-h-screen bg-black text-white font-sans relative">
-          <SidebarToggle
-            isOpen={sidebarOpen}
-            onClick={() => setSidebarOpen((prev) => !prev)}
-          />
+        <div className="flex flex-col min-h-screen bg-black text-white font-sans relative">
+          <User />
 
-          {sidebarOpen && (
-            <SidebarOverlay onClick={() => setSidebarOpen(false)} />
-          )}
-
-          <Sidebar
-            conversations={conversations}
-            onSelectConversation={handleSelectConversation}
-            onNewChat={handleNewChat}
-            isOpen={sidebarOpen}
-            onClose={() => setSidebarOpen(false)}
-            handleDeleteConversation={handleDeleteConversation}
-          />
-
-          <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 mt-20 mb-10">
-            <ChatHeader />
-            <ChatSection
-              history={history}
-              isLoading={isLoading}
-              input={input}
-              setInput={setInput}
-              handleSubmit={handleSubmit}
+          <div className="flex flex-1">
+            <SidebarToggle
+              isOpen={sidebarOpen}
+              onClick={() => setSidebarOpen((prev) => !prev)}
             />
-            <SignOutButton />
+            {sidebarOpen && (
+              <SidebarOverlay onClick={() => setSidebarOpen(false)} />
+            )}
+            <Sidebar
+              conversations={conversations}
+              onSelectConversation={handleSelectConversation}
+              onNewChat={handleNewChat}
+              isOpen={sidebarOpen}
+              onClose={() => setSidebarOpen(false)}
+              handleDeleteConversation={handleDeleteConversation}
+            />
+            <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 mt-20 mb-10">
+              <ChatHeader />
+              <ChatSection
+                history={history}
+                isLoading={isLoading}
+                input={input}
+                setInput={setInput}
+                handleSubmit={handleSubmit}
+              />
+            </div>
           </div>
         </div>
       </SignedIn>

@@ -11,7 +11,7 @@ const User = () => {
   const { user } = useUser();
 
   return (
-    <div className="flex items-center gap-4 absolute top-4 right-4">
+    <div className="flex items-center gap-4 absolute top-4 right-4 text-gray-800">
       <SignedOut>
         <SignInButton />
       </SignedOut>

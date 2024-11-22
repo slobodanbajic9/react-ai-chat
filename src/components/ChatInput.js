@@ -36,7 +36,7 @@ function ChatInput({ input, setInput, handleSubmit }) {
         style={{ maxHeight: "200px", minHeight: "40px" }}></textarea>
       <button
         type="submit"
-        className="absolute right-2 bottom-[0.25rem] px-4 py-2 text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        className="absolute right-2 bottom-[0.25rem] px-4 py-2 text-sm font-medium text-white bg-blue-800 hover:bg-blue-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400">
         Send
       </button>
     </form>

@@ -83,7 +83,7 @@ function Sidebar({
               onNewChat();
               onClose();
             }}
-            className="flex items-center gap-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+            className="flex items-center gap-2 p-2 bg-blue-800 text-white rounded hover:bg-blue-600">
             <CiCirclePlus size={20} />
             <span>New chat</span>
           </button>

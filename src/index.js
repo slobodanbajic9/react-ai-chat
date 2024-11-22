@@ -13,7 +13,10 @@ if (!CLERK_API_KEY) {
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <ClerkProvider publishableKey={CLERK_API_KEY} afterSignOutUrl="/">
+    <ClerkProvider
+      publishableKey={CLERK_API_KEY}
+      afterSignOutUrl="/sign-in"
+      signUpUrl="/sign-up">
       <App />
     </ClerkProvider>
   </React.StrictMode>

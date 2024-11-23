@@ -100,7 +100,15 @@ const Home = () => {
   return (
     <>
       <SignedIn>
-        <div className="flex flex-col min-h-screen bg-black text-white font-sans relative">
+        <div
+          style={{
+            backgroundImage: `url(${
+              window.innerWidth < 768 ? "/bg-mobile.jpg" : "/bg-image.jpg"
+            })`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+          className="flex flex-col min-h-screen text-white font-sans relative">
           <User />
 
           <div className="flex flex-1">

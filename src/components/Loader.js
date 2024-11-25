@@ -6,7 +6,7 @@ const Loader = () => {
     <PulseLoader
       size={20}
       className="m-10"
-      color="#60a5fa"
+      color="#1e40af"
       aria-label="Loading Spinner"
       data-testid="loader"
     />

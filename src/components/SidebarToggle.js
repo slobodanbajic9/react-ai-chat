@@ -6,7 +6,7 @@ const SidebarToggle = ({ isOpen, onClick }) => {
     <button
       className="p-2 text-2xl rounded focus:outline-none absolute top-4 left-4 z-20 sm:hidden"
       onClick={onClick}>
-      <HiOutlineMenuAlt1 />
+      <HiOutlineMenuAlt1 color="#1f2937" />
     </button>
   );
 };

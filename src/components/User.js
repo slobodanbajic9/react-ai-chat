@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import {
   SignedIn,
   SignedOut,
@@ -5,10 +6,21 @@ import {
   UserButton,
   useUser,
 } from "@clerk/clerk-react";
-import React from "react";
+import { saveUserToDB, updateUserInDB } from "../services/userUtils";
 
 const User = () => {
   const { user } = useUser();
+
+  useEffect(() => {
+    const handleUser = async () => {
+      await saveUserToDB(user);
+      await updateUserInDB(user);
+    };
+
+    if (user) {
+      handleUser();
+    }
+  }, [user]);
 
   return (
     <div className="flex items-center gap-4 absolute top-4 right-4 text-gray-800">

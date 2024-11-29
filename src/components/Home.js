@@ -7,7 +7,12 @@ import {
   deleteConversation,
 } from "../services/api";
 
-import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/clerk-react";
+import {
+  RedirectToSignIn,
+  SignedIn,
+  SignedOut,
+  useUser,
+} from "@clerk/clerk-react";
 
 import SidebarToggle from "./SidebarToggle";
 import SidebarOverlay from "./SidebarOverlay";
@@ -23,6 +28,8 @@ const Home = () => {
   const [conversations, setConversations] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useUser();
+  const userId = user?.id;
 
   useEffect(() => {
     const loadConversations = async () => {
@@ -34,7 +41,11 @@ const Home = () => {
   }, []);
 
   const handleSaveOrUpdateConversation = async (messages) => {
-    const result = await saveOrUpdateConversation(conversationId, messages);
+    const result = await saveOrUpdateConversation(
+      conversationId,
+      messages,
+      userId
+    );
     if (!conversationId) {
       setConversationId(result._id);
       setConversations((prev) => [result, ...prev]);

@@ -72,11 +72,22 @@ app.put("/api/users", async (req, res) => {
 
 // Save a new conversation
 app.post("/api/conversations", async (req, res) => {
+  const { userId, history } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ message: "User ID is required." });
+  }
+
   try {
-    const newConversation = new Conversation({ history: req.body.history });
+    const newConversation = new Conversation({
+      userId,
+      history,
+    });
+
     const savedConversation = await newConversation.save();
     res.status(201).json(savedConversation);
   } catch (error) {
+    console.error("Error saving conversation:", error);
     res.status(500).json({ message: error.message });
   }
 });

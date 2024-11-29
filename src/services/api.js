@@ -12,13 +12,18 @@ export const fetchConversations = async () => {
   }
 };
 
-export const saveOrUpdateConversation = async (conversationId, messages) => {
+export const saveOrUpdateConversation = async (
+  conversationId,
+  messages,
+  userId
+) => {
   if (conversationId) {
     await axios.put(`${BASE_URL}/api/conversations/${conversationId}`, {
       messages,
     });
   } else {
     const response = await axios.post(`${BASE_URL}/api/conversations`, {
+      userId, // include user id
       history: messages,
     });
     return response.data;

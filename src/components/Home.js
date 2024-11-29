@@ -26,6 +26,7 @@ const Home = () => {
   const [history, setHistory] = useState([]);
   const [conversationId, setConversationId] = useState(null);
   const [conversations, setConversations] = useState([]);
+  console.log("🚀 ~ Home ~ conversations:", conversations);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useUser();
@@ -137,6 +138,7 @@ const Home = () => {
               isOpen={sidebarOpen}
               onClose={() => setSidebarOpen(false)}
               handleDeleteConversation={handleDeleteConversation}
+              currentUserId={userId}
             />
             <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 mt-20 mb-10">
               <ChatHeader />

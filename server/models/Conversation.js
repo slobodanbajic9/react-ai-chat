@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 
 const conversationSchema = new mongoose.Schema({
+  userId: { type: String, required: true },
+
   history: [
     {
       role: String,

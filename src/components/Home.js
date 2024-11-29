@@ -7,7 +7,12 @@ import {
   deleteConversation,
 } from "../services/api";
 
-import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/clerk-react";
+import {
+  RedirectToSignIn,
+  SignedIn,
+  SignedOut,
+  useUser,
+} from "@clerk/clerk-react";
 
 import SidebarToggle from "./SidebarToggle";
 import SidebarOverlay from "./SidebarOverlay";
@@ -21,8 +26,11 @@ const Home = () => {
   const [history, setHistory] = useState([]);
   const [conversationId, setConversationId] = useState(null);
   const [conversations, setConversations] = useState([]);
+  console.log("🚀 ~ Home ~ conversations:", conversations);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useUser();
+  const userId = user?.id;
 
   useEffect(() => {
     const loadConversations = async () => {
@@ -34,7 +42,11 @@ const Home = () => {
   }, []);
 
   const handleSaveOrUpdateConversation = async (messages) => {
-    const result = await saveOrUpdateConversation(conversationId, messages);
+    const result = await saveOrUpdateConversation(
+      conversationId,
+      messages,
+      userId
+    );
     if (!conversationId) {
       setConversationId(result._id);
       setConversations((prev) => [result, ...prev]);
@@ -126,6 +138,7 @@ const Home = () => {
               isOpen={sidebarOpen}
               onClose={() => setSidebarOpen(false)}
               handleDeleteConversation={handleDeleteConversation}
+              currentUserId={userId}
             />
             <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 mt-20 mb-10">
               <ChatHeader />

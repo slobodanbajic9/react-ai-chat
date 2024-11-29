@@ -18,12 +18,13 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // Save user to database
 app.post("/api/users", async (req, res) => {
-  const { first_name, last_name, email } = req.body;
+  const { id, first_name, last_name, email } = req.body;
 
   try {
     let user = await User.findOne({ email });
     if (!user) {
       user = new User({
+        id,
         first_name,
         last_name,
         email,
@@ -40,13 +41,17 @@ app.post("/api/users", async (req, res) => {
 
 // Update user in database
 app.put("/api/users", async (req, res) => {
-  const { email, first_name, last_name } = req.body;
+  const { id, email, first_name, last_name } = req.body;
 
   try {
     const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.id !== id) {
+      user.id = id;
     }
 
     if (user.first_name !== first_name) {
@@ -67,11 +72,22 @@ app.put("/api/users", async (req, res) => {
 
 // Save a new conversation
 app.post("/api/conversations", async (req, res) => {
+  const { userId, history } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ message: "User ID is required." });
+  }
+
   try {
-    const newConversation = new Conversation({ history: req.body.history });
+    const newConversation = new Conversation({
+      userId,
+      history,
+    });
+
     const savedConversation = await newConversation.save();
     res.status(201).json(savedConversation);
   } catch (error) {
+    console.error("Error saving conversation:", error);
     res.status(500).json({ message: error.message });
   }
 });

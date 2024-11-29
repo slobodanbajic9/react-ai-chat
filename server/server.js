@@ -18,12 +18,13 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // Save user to database
 app.post("/api/users", async (req, res) => {
-  const { first_name, last_name, email } = req.body;
+  const { id, first_name, last_name, email } = req.body;
 
   try {
     let user = await User.findOne({ email });
     if (!user) {
       user = new User({
+        id,
         first_name,
         last_name,
         email,
@@ -40,13 +41,17 @@ app.post("/api/users", async (req, res) => {
 
 // Update user in database
 app.put("/api/users", async (req, res) => {
-  const { email, first_name, last_name } = req.body;
+  const { id, email, first_name, last_name } = req.body;
 
   try {
     const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.id !== id) {
+      user.id = id;
     }
 
     if (user.first_name !== first_name) {

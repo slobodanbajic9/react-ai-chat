@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 const Conversation = require("./models/Conversation");
+const User = require("./models/User");
 
 const app = express();
 app.use(cors());
@@ -13,6 +14,55 @@ app.use(express.json());
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+});
+
+// Save user to database
+app.post("/api/users", async (req, res) => {
+  const { first_name, last_name, email } = req.body;
+
+  try {
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = new User({
+        first_name,
+        last_name,
+        email,
+      });
+      await user.save();
+    }
+
+    res.status(201).json({ message: "User saved!", user });
+  } catch (error) {
+    console.error("Error saving user:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
+// Update user in database
+app.put("/api/users", async (req, res) => {
+  const { email, first_name, last_name } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.first_name !== first_name) {
+      user.first_name = first_name;
+    }
+    if (user.last_name !== last_name) {
+      user.last_name = last_name;
+    }
+
+    await user.save();
+
+    res.status(200).json({ message: "User updated successfully", user });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 // Save a new conversation

@@ -4,6 +4,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 export const saveUserToDB = async (user) => {
   if (user) {
     const userData = {
+      id: user.id,
       first_name: user.firstName,
       last_name: user.lastName,
       email: user.primaryEmailAddress.emailAddress,
@@ -27,6 +28,7 @@ export const saveUserToDB = async (user) => {
 export const updateUserInDB = async (user) => {
   if (user) {
     const userData = {
+      id: user.id,
       first_name: user.firstName,
       last_name: user.lastName,
       email: user.primaryEmailAddress.emailAddress,

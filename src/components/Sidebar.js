@@ -11,6 +11,7 @@ function Sidebar({
   isOpen,
   onClose,
   handleDeleteConversation,
+  currentUserId,
 }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedConversationId, setSelectedConversationId] = useState(null);
@@ -41,6 +42,10 @@ function Sidebar({
     }
   };
 
+  const userConversations = conversations.filter(
+    (conversation) => conversation.userId === currentUserId
+  );
+
   return (
     <div
       className={`fixed top-0 left-0 h-full bg-gray-800 text-white w-64 p-4 transform transition-transform duration-300 ${
@@ -50,7 +55,7 @@ function Sidebar({
         <h2 className="text-xl mb-4 p-2">Recent Conversations</h2>
 
         <ul className="flex-grow overflow-y-auto">
-          {conversations.map((conversation) => (
+          {userConversations.map((conversation) => (
             <li
               key={conversation._id}
               className="flex justify-between items-center cursor-pointer p-2 hover:bg-gray-700 rounded">
